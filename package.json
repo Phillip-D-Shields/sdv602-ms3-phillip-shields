@@ -1,0 +1,33 @@
+{
+  "name": "auth0-loginPortal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon ./index.js",
+    "ui": "browser-sync start --config bs-config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Phillip-D-Shields/auth0-loginPortal.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Phillip-D-Shields/auth0-loginPortal/issues"
+  },
+  "homepage": "https://github.com/Phillip-D-Shields/auth0-loginPortal#readme",
+  "devDependencies": {
+    "browser-sync": "^2.26.13",
+    "nodemon": "^2.0.6"
+  },
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "passport": "^0.4.1",
+    "passport-auth0": "^1.4.0",
+    "pug": "^3.0.0"
+  }
+}
