@@ -3,13 +3,15 @@ extends layout
 
 block layout-content
   div.View.UserView
-    h1.Banner Comrade #{userProfile.nickname}!
+    h1.Banner Comrade #{userProfile.nickname}
     div.Message
       div.Title
         h3 Known information of Prisoner: 
-        h1 #{userProfile.id}
+        h1 #{userProfile.nickname}
       pre.Details=JSON.stringify(userProfile, null, 2)
     div.NavButtons
       a(href="/logout")
-        div.NavButton Log out
+        div.NavButton log out
+      a(href="/rooms")
+        div.NavButton rooms
 

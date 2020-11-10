@@ -14,11 +14,23 @@ require("dotenv").config();
 
 const authRouter = require("./auth");
 
+const mongoose = require("mongoose");
+const roomsRouter = require("./routes/rooms");
+
+const userModel = require("./models/profile");
+
 /**
  * App Variables
  */
 const app = express();
 const port = process.env.PORT || "8000";
+
+// const UserProfile = {
+//   id: null,
+//   name: null,
+//   lastRoomCompleted: null,
+//   createDate: null,
+// };
 
 /**
  * Session Configuration (New!)
@@ -66,10 +78,13 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "pug");
 // ! serve static assets
 app.use(express.static(path.join(__dirname, "public")));
+// ! rooms routes config
+// app.use("/rooms", roomsRouter);
 // ! expressSession middleware
 app.use(expressSession(session));
 // ! passport js
 passport.use(strategy);
+
 // ? must ensure that passport.initialize() and passport.session() are added after binding the express-session middleware, expressSession(session), to the application-level middleware.
 app.use(passport.initialize());
 app.use(passport.session());
@@ -92,6 +107,21 @@ app.use((req, res, next) => {
 // ! Router mounting
 app.use("/", authRouter);
 
+// ! mongoose connection to mongodb
+mongoose.connect(process.env.DATABASE_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true
+});
+
+const db = mongoose.connection;
+
+db.on("error", (error) => console.error(error));
+db.once("open", () => {
+  console.log(`db is connected`);
+});
+
 /**
  * Routes Definitions
  */
@@ -104,16 +134,56 @@ const secured = (req, res, next) => {
 };
 
 // ! defined routes
+// ? index route
 app.get("/", (req, res) => {
-  res.render("index", { title: "Title Here" });
+  res.render("index", { title: "Lubyanka, 1991" });
 });
 
+// ? user route
 app.get("/user", secured, (req, res, next) => {
-  const { _raw, _json, ...userProfile } = req.user;
+  var { _raw, _json, ...userProfile } = req.user;
+
+  var unformattedUserId = req.user.id;
+  var formattedUserId = unformattedUserId.slice(6)
+
+  var profileInstance = new userModel({
+    userId: formattedUserId,
+    userName: req.user.nickname,
+    nextRoom: 0,
+  });
+
+  profileInstance.save(function (err) {
+    console.error(err);
+  })
+  
   res.render("user", {
     title: "Profile",
-    userProfile: userProfile
+    userProfile: userProfile,
   });
+
+  
+  
+});
+
+// ? rooms route
+app.get("/rooms", (req, res, next) => {
+  res.render("rooms");
+
+});
+
+// ? room00 route
+app.get("/room00", (req, res) => {
+  res.render("room00");
+});
+
+// ? room01 route
+app.get("/room01", (req, res) => {
+  res.render("room01");
+});
+
+// ? room02 route
+app.get("/room02", (req, res) => {
+  res.render("room02");
 });
 
 /**

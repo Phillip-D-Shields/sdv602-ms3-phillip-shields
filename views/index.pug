@@ -6,12 +6,15 @@ block layout-content
     div.Message
       div.Title
         h3 Lubyanka,
-        h1 survive the basement
-      span.Details find the right item to use and escape the room
+        h1 locked in a basement
+      span.Details find the right item to use and escape the room.
+       span enter the command `use item_name` to figure out what works
+       span for example 'use keypad' or 'use pistol'
     div.NavButtons
       if isAuthenticated
         a(href="/user")
-          div.NavButton Just dive in!
+          div.NavButton profile
       else
         a(href="/login")
           div.NavButton Log in
+      

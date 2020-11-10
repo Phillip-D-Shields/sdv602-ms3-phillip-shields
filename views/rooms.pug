@@ -1,0 +1,21 @@
+extends layout
+
+block layout-content
+    div.View.WelcomeView
+        h1.Banner Rooms
+        div.Message
+            div.Title
+                h3 the room of rooms
+                h1 choose wisely
+        div.NavButtons    
+            a(href="/room00")
+                div.NavButton room00
+            a(href=`/room01`)
+                div.NavButton room01
+            a(href="/room02")
+                div.NavButton room02
+        div.NavButtons    
+            a(href="/user")
+                div.NavButton profile
+            a(href=`/logout`)
+                div.NavButton logout

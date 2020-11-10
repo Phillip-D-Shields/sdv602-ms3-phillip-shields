@@ -1,0 +1,22 @@
+extends layout
+
+block layout-content
+    div.View.WelcomeView
+        h1.Banner Room01
+        div.Message
+            div.Title
+                h3 first room,
+                h1 wakey wakey, unlucky fatey
+                span.Details there is a gun and notebook
+                span there is some other stuff,
+                span but lets try the gun first
+            input
+        div.NavButtons    
+            a(href="/user")
+                div.NavButton Profile
+            a(href=`/rooms`)
+                div.NavButton rooms
+            a(href="/logout")
+                div.NavButton Log out    
+
+

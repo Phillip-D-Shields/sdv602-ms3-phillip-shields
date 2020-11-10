@@ -40,7 +40,7 @@ h3 {
   padding: 0;
   margin: 0;
 
-  color: #2a3747;
+  color: antiquewhite;
 }
 
 h1 {
@@ -87,7 +87,8 @@ a {
   border-radius: 5px;
 
   overflow: hidden;
-  background: white;
+  background: rgba(77, 36, 36, 0.9);
+  color: antiquewhite;
   padding: 15px;
 
   font-family: "Share Tech Mono", monospace;
@@ -97,7 +98,8 @@ a {
 }
 
 .Message {
-  background: white;
+  background: rgba(77, 36, 36, 0.9);
+  color: antiquewhite;
   padding: 30px;
   border-bottom: var(--ui-shadow-border);
   box-shadow: var(--ui-shadow);
@@ -105,6 +107,7 @@ a {
 
 .Message > .Title {
   padding-bottom: 20px;
+  color: antiquewhite;
 }
 
 .Message > .Details {
@@ -129,7 +132,7 @@ a {
   height: 55px;
   width: 150px;
 
-  background: #fa4141;
+  background: rgba(77, 36, 36, 0.9);
 
   border-radius: 30px;
 
@@ -149,7 +152,7 @@ a {
   }
 
 .UserView {
-    background: url("https://cdn.auth0.com/blog/whatabyte-portal/patio.jpeg") left
+    background: url("https://images.unsplash.com/photo-1597058141328-03f46c336286?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80") left
       bottom;
     background-size: cover;
   }
