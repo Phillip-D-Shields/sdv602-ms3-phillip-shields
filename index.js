@@ -1,7 +1,7 @@
 // index.js
 
 /**
- * Required External Modules
+//  ! Required External Modules
  */
 const express = require("express");
 const path = require("path");
@@ -15,12 +15,13 @@ require("dotenv").config();
 const authRouter = require("./auth");
 
 const mongoose = require("mongoose");
-const roomsRouter = require("./routes/rooms");
+// const roomsRouter = require("./routes/rooms");
 
 const userModel = require("./models/profile");
+const { Recoverable } = require("repl");
 
 /**
- * App Variables
+// ! App Variables
  */
 const app = express();
 const port = process.env.PORT || "8000";
@@ -33,7 +34,7 @@ const port = process.env.PORT || "8000";
 // };
 
 /**
- * Session Configuration (New!)
+ // ! Session Configuration 
  */
 const session = {
   secret: process.env.SESSION_SECRET,
@@ -48,7 +49,7 @@ if (app.get("env") === "production") {
 }
 
 /**
- * Passport Configuration (New!)
+// ! Passport Configuration 
  */
 const strategy = new Auth0Strategy(
   {
@@ -71,7 +72,7 @@ const strategy = new Auth0Strategy(
 );
 
 /**
- *  App Configuration
+// !  App Configuration
  */
 // ! pug configs
 app.set("views", path.join(__dirname, "views"));
@@ -112,7 +113,7 @@ mongoose.connect(process.env.DATABASE_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
-  useCreateIndex: true
+  useCreateIndex: true,
 });
 
 const db = mongoose.connection;
@@ -123,7 +124,7 @@ db.once("open", () => {
 });
 
 /**
- * Routes Definitions
+ // ! Routes Definitions
  */
 const secured = (req, res, next) => {
   if (req.user) {
@@ -143,32 +144,40 @@ app.get("/", (req, res) => {
 app.get("/user", secured, (req, res, next) => {
   var { _raw, _json, ...userProfile } = req.user;
 
+  // ? this is ok for dev, but would need a salt or hash instead of using the auth0 user id
   var unformattedUserId = req.user.id;
-  var formattedUserId = unformattedUserId.slice(6)
-
-  var profileInstance = new userModel({
-    userId: formattedUserId,
-    userName: req.user.nickname,
-    nextRoom: 0,
+  var formattedUserId = unformattedUserId.slice(6);
+  // ? check to see if current user already exists
+  userModel.exists({ userId: formattedUserId }).then((exists) => {
+    if (exists) {
+      next();
+    } else {
+      // ! create new instance for new user
+      var profileInstance = new userModel({
+        userId: formattedUserId,
+        userName: req.user.nickname,
+        nextRoom: 0,
+      });
+      // ? save instance
+      profileInstance.save((err) => console.error(err));
+    }
   });
 
-  profileInstance.save(function (err) {
-    console.error(err);
-  })
-  
   res.render("user", {
     title: "Profile",
     userProfile: userProfile,
   });
-
-  
-  
 });
 
 // ? rooms route
 app.get("/rooms", (req, res, next) => {
-  res.render("rooms");
+  const ROOM_01 = req.user.room01;
+  const ROOM_02 = req.user.room02;
 
+  res.render("rooms", {
+    roomONE: ROOM_01,
+    roomTWO: ROOM_02,
+  });
 });
 
 // ? room00 route
@@ -187,7 +196,7 @@ app.get("/room02", (req, res) => {
 });
 
 /**
- * Server Activation
+ // ! Server Activation
  */
 app.listen(port, () => {
   console.log(`Listening to requests on http://localhost:${port}`);
