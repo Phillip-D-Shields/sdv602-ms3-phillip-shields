@@ -19,6 +19,7 @@ const mongoose = require("mongoose");
 
 const userModel = require("./models/profile");
 const { Recoverable } = require("repl");
+const { profile } = require("console");
 
 /**
 // ! App Variables
@@ -108,6 +109,12 @@ app.use((req, res, next) => {
 // ! Router mounting
 app.use("/", authRouter);
 
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
+
 // ! mongoose connection to mongodb
 mongoose.connect(process.env.DATABASE_URL, {
   useNewUrlParser: true,
@@ -147,17 +154,22 @@ app.get("/user", secured, (req, res, next) => {
   // ? this is ok for dev, but would need a salt or hash instead of using the auth0 user id
   var unformattedUserId = req.user.id;
   var formattedUserId = unformattedUserId.slice(6);
+  var nickName = req.user.nickname;
+  var newUserId = `${nickName}-${formattedUserId}`;
+
   // ? check to see if current user already exists
-  userModel.exists({ userId: formattedUserId }).then((exists) => {
+
+  userModel.exists({ userId: newUserId }).then((exists) => {
     if (exists) {
       next();
     } else {
       // ! create new instance for new user
       var profileInstance = new userModel({
-        userId: formattedUserId,
-        userName: req.user.nickname,
-        nextRoom: 0,
+        userId: newUserId,
+        userName: nickName,
+        roomsCompleted: [true, false, false]
       });
+
       // ? save instance
       profileInstance.save((err) => console.error(err));
     }
@@ -170,31 +182,113 @@ app.get("/user", secured, (req, res, next) => {
 });
 
 // ? rooms route
-app.get("/rooms", (req, res, next) => {
-  const ROOM_01 = req.user.room01;
-  const ROOM_02 = req.user.room02;
+app.get("/rooms", async (req, res, next) => {
+
+  const USER_ID = req.user.id;
+  const USER_NICKNAME = req.user.nickname;
+  var formattedUserId = USER_ID.slice(6);
+  var nickName = USER_NICKNAME;
+  var _userId = `${nickName}-${formattedUserId}`;
+  // var instance = new userModel();
+
+  let instance = await userModel.findOne(
+    { userId: _userId }
+  );
+
+  const _roomsDone = instance.roomsCompleted;
+
+  instance.save((err)=> console.log(err));
 
   res.render("rooms", {
-    roomONE: ROOM_01,
-    roomTWO: ROOM_02,
+    roomsDone: _roomsDone,
+    rm01: _roomsDone[1],
+    rm02: _roomsDone[2]
   });
 });
 
 // ? room00 route
 app.get("/room00", (req, res) => {
-  res.render("room00");
+  // const USER_ID = req.user.id;
+
+  res.render("room00", {
+    // userId: USER_ID,
+    reply: "try your luck",
+  });
+});
+
+// ! room00 input check
+app.post("/check_answer00", async (req, res) => {
+  const PASS = "gun";
+  const INPUT = req.body.commandInput;
+  const USER_ID = req.user.id;
+  const USER_NICKNAME = req.user.nickname;
+  var formattedUserId = USER_ID.slice(6);
+  var nickName = USER_NICKNAME;
+  var _userId = `${nickName}-${formattedUserId}`;
+  
+
+  // TODO add logic to save and add button after correct answer
+  if (INPUT === PASS) {
+    
+    
+    let instance = await userModel.findOneAndUpdate(
+      { userId: _userId },
+      { roomsCompleted: [true, true, false] },
+      { new: true } 
+    );
+
+    instance.save((err)=> console.log(err));
+
+    res.render("room00", { userId: USER_ID, reply: "correct", isOpen: true });
+  } else {
+    res.render("room00", { userId: USER_ID, reply: "wrong" });
+  }
 });
 
 // ? room01 route
 app.get("/room01", (req, res) => {
-  res.render("room01");
+  const user = req.user;
+  const userProfile = JSON.stringify(user, null, 2);
+
+  res.render("room01", {
+    userProfile: userProfile,
+  });
 });
 
+// ! room01 input check
+app.post("/check_answer01", (req, res) => {
+  const PASS = "1 5 10 10 5 1";
+  const INPUT = req.body.commandInput;
+  const USER_ID = req.user.id;
+
+  // TODO add logic to save and add button after correct answer
+  if (INPUT === PASS) {
+    res.render("room01", { userId: USER_ID, reply: "correct", isOpen: true });
+  } else {
+    res.render("room01", { userId: USER_ID, reply: "wrong" });
+  }
+});
 // ? room02 route
 app.get("/room02", (req, res) => {
-  res.render("room02");
+  const userProfile = req.user;
+  res.render("room02", {
+    userProfile: userProfile,
+  });
 });
 
+// ! room02 input check
+app.post("/check_answer02", (req, res) => {
+  const PASS = "phill";
+  const INPUT = req.body.commandInput;
+  const USER_ID = req.user.id;
+
+  // TODO add logic to save and add button after correct answer
+  if (INPUT === PASS) {
+    res.render("room02", { userId: USER_ID, reply: "correct", isOpen: true });
+  } else {
+    res.render("room02", { userId: USER_ID, reply: "wrong" });
+  }
+});
 /**
  // ! Server Activation
  */

@@ -1,22 +1,26 @@
 extends layout
-
 block layout-content
     div.View.WelcomeView
         h1.Banner Room00
         div.Message
             div.Title
-                h3 first room,
-                h1 wakey wakey, unlucky fatey
-                span.Details there is a gun and notebook
-                span there is some other stuff,
-                span but lets try the gun first
-            input
-        div.NavButtons    
+                h3 room-zero-zero,
+                h1 wakey wakey, lets be a hero 
+                p.Details there is a gun and notebook
+                p maybe you could 'use' one of them                
+                form(method='POST', action='/check_answer00')
+                    | use :
+                    input(type='text', name='commandInput')
+            span.Details #{reply}
+        div.NavButtons 
+            if isOpen 
+                a(href='/room01') 
+                    div.NavButton next room   
             a(href="/user")
                 div.NavButton Profile
             a(href=`/rooms`)
                 div.NavButton rooms
             a(href="/logout")
-                div.NavButton Log out    
-
+                div.NavButton Log out
+        
 

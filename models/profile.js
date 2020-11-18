@@ -11,20 +11,9 @@ const profileSchema = new mongoose.Schema(
     type: String,
     required: true
   },
-  room00: {
-    type: Boolean,
-    required: true,
-    default: true,
-  },
-  room01: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
-  room02: {
-    type: Boolean,
-    required: true,
-    default: false,
+  roomsCompleted: {
+    type: Array,
+    required: true
   },
   createdDate: {
     type: Date,

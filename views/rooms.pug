@@ -10,12 +10,12 @@ block layout-content
         div.NavButtons    
             a(href="/room00")
                 div.NavButton room00
-        if roomONE
-            a(href=`/room01`)
-                div.NavButton room01
-        if room0TWO
-            a(href="/room02")
-                div.NavButton room02
+            if rm01
+                a(href=`/room01`)
+                    div.NavButton room01
+            if rm02
+                a(href="/room02")
+                    div.NavButton room02
         div.NavButtons    
             a(href="/user")
                 div.NavButton profile
