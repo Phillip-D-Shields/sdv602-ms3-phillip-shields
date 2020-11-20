@@ -124,8 +124,9 @@ mongoose.connect(process.env.DATABASE_URL, {
 });
 
 const db = mongoose.connection;
-
+// ! test connection for errors
 db.on("error", (error) => console.error(error));
+// ! alert that db is connected
 db.once("open", () => {
   console.log(`db is connected`);
 });

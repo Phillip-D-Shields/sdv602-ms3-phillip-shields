@@ -5,11 +5,19 @@ block layout-content
         h1.Banner Room02
         div.Message
             div.Title
-                h3 first room,
+                h3 room-zero-two,
                 h1 wakey wakey, unlucky fatey
                 span.Details there is a gun and notebook, there is some other stuff,but lets try the gun first
-            input
+            form(method='POST', action='/check_answer01')
+                | next line :
+                input(type='text', name='commandInput')
+
+            
+            span.Details #{reply}
         div.NavButtons    
+            if isOpen 
+                a(href='/room02') 
+                    div.NavButton no more 
             a(href="/user")
                 div.NavButton Profile
             a(href=`/rooms`)
